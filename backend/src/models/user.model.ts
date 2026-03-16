@@ -8,7 +8,7 @@ export interface IUser extends Document {
     gender: string;
     age: number;
     bio?: string;
-    photos: string[];
+    photos: { url: string; publicId: string }[];
     location?: string;
     isProfileComplete: boolean;
     interests: string[];
@@ -56,10 +56,18 @@ const UserSchema: Schema = new Schema(
       default: ""
     },
 
-    photos: {
-      type: [String],
-      default: []
+    photos: [
+  {
+    url: {
+      type: String,
+      required: true
     },
+    publicId: {
+      type: String,
+      required: true
+    }
+  }
+    ],
 
     location: {
       type: String

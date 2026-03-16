@@ -1,6 +1,7 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import mongoose from 'mongoose';
 import app from './app';
-import dotenv from 'dotenv';
 import { Server as SocketIOServer } from 'socket.io';
 import http from 'http';
 

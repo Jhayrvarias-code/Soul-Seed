@@ -6,6 +6,7 @@ import xss from 'xss-clean';
 import dotenv from 'dotenv';
 import router from './routes/user.routes';
 import authRoutes from "./routes/auth.routes";
+import photoRoutes from "./routes/photo.routes";
 
 dotenv.config();
   
@@ -21,6 +22,7 @@ app.use(xss());
 // Routes
 app.use('/api/users', router);
 app.use("/api/auth", authRoutes);
+app.use("/api/photos", photoRoutes);
 
 // Test route
 app.get('/', (req, res) => {

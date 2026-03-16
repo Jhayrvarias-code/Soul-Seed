@@ -5,7 +5,7 @@ GET CURRENT USER PROFILE
 */
 export const getCurrentUser = async (userId: string) => {
 
-  const user = await User.findById(userId).select("-password");
+  const user = await User.findById(userId).select("-password"); // Exclude password from the response
 
   if (!user) {
     throw new Error("User not found");
