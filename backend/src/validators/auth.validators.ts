@@ -14,7 +14,7 @@ export const registerSchema = Joi.object({
     .valid(Joi.ref("password"))
     .required()
     .messages({ "any.only": "Passwords do not match" }),
-  age: Joi.number().min(18).max(100).required(),
+  birthdate: Joi.date().required(),
   gender: Joi.string()
     .valid("Male", "Female", "Other")
     .required(),

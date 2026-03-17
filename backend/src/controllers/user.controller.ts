@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { getCurrentUser } from "../services/user.service";
+import { checkProfileCompletion } from "../helpers/profileCompletion";
 
 export const getMe = async (req: Request, res: Response) => {
+  
 
   try {
 
@@ -9,7 +11,13 @@ export const getMe = async (req: Request, res: Response) => {
 
     const user = await getCurrentUser(userId);
 
-    res.status(200).json(user);
+   // Check if the user's profile is complete
+    const isProfileComplete = checkProfileCompletion(user);
+
+    res.status(200).json({
+      ...user.toObject(), // convert Mongoose document to plain JS object
+      isProfileComplete
+    });
 
   } catch (error: any) {
 

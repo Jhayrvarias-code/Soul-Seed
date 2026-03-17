@@ -6,7 +6,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     gender: string;
-    age: number;
+    birthdate: Date;
     bio?: string;
     photos: { url: string; publicId: string; isAvatar: boolean }[];
     location?: string;
@@ -46,9 +46,9 @@ const UserSchema: Schema = new Schema(
       required: true
     },
 
-    age: {
-      type: Number,
-      required: true
+    birthdate: { 
+      type: Date, 
+      required: true 
     },
 
     bio: {
