@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import router from './routes/user.routes';
 import authRoutes from "./routes/auth.routes";
 import photoRoutes from "./routes/photo.routes";
+import discoverRoutes from "./routes/discover.routes"
 
 dotenv.config();
   
@@ -23,6 +24,7 @@ app.use(xss());
 app.use('/api/users', router);
 app.use("/api/auth", authRoutes);
 app.use("/api/photos", photoRoutes);
+app.use("/api/discover", discoverRoutes);
 
 // Test route
 app.get('/', (req, res) => {
