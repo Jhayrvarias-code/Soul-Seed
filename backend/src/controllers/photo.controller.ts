@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
+import { UploadApiResponse } from "cloudinary";
 import { uploadToCloudinary } from "../helpers/uploadToCloudinary";
-import { addPhoto } from "../services/photo.service";
+import * as photoService from "../services/photo.service";
+import cloudinary from "../config/cloudinary";
 
+/**
+ * Upload a photo and add it to the user's profile
+ */
 export const uploadPhoto = async (req: Request, res: Response) => {
+
+  let uploadedImage: UploadApiResponse | null = null;
 
   try {
 
@@ -12,26 +19,34 @@ export const uploadPhoto = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const result: any = await uploadToCloudinary(req.file.buffer);
+// Upload photo to Cloudinary
+    uploadedImage = await uploadToCloudinary(
+      req.file.buffer
+    ) as UploadApiResponse;
 
-  const photos = await addPhoto(
+  // Add photo URL and public ID to user's profile
+  const photos = await photoService.addPhoto(
   userId,
-  result.secure_url,
-  result.public_id
+  uploadedImage.secure_url,
+  uploadedImage.public_id
 );
 
-console.log("PHOTO OBJECT:", {
-  url: result.secure_url,
-  publicId: result.public_id
+// console.log("PHOTO OBJECT:", {
+//   url: uploadedImage.secure_url,
+//   publicId: uploadedImage.public_id
+// });
+
+   res.status(200).json({
+  message: "Photo uploaded successfully",
+  photos,
+  avatar: photos.find(p => p.isAvatar) || null
 });
 
-    res.status(200).json({
-      message: "Photo uploaded successfully",
-      photoUrl: result.secure_url,
-      photos
-    });
-
   } catch (error: any) {
+
+    if (uploadedImage?.public_id) {
+    await cloudinary.uploader.destroy(uploadedImage.public_id);
+  }
 
     console.error(error);
 
@@ -41,4 +56,45 @@ console.log("PHOTO OBJECT:", {
 
   }
 
+};
+
+/**
+ * Delete a photo from user's profile
+ */
+export const deletePhoto = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+
+    const { photoId } = req.params as { photoId: string };
+
+    const photos = await photoService.deletePhoto(userId, photoId);
+
+    res.status(200).json({
+      message: "Photo deleted successfully",
+      photos,
+    });
+
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+/**
+ * Set a specific photo as user's avatar
+ */
+export const setAvatar = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { photoId } = req.params as { photoId: string };
+
+    const photos = await photoService.setAvatar(userId, photoId);
+
+    res.status(200).json({
+      message: "Avatar updated successfully",
+      photos,
+    });
+
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
 };
