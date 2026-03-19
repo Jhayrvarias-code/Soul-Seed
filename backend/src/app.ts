@@ -8,6 +8,8 @@ import router from './routes/user.routes';
 import authRoutes from "./routes/auth.routes";
 import photoRoutes from "./routes/photo.routes";
 import discoverRoutes from "./routes/discover.routes"
+import swipeRoutes from "./routes/swipe.routes"
+import matchRoutes from "./routes/match.routes"
 
 dotenv.config();
   
@@ -25,6 +27,8 @@ app.use('/api/users', router);
 app.use("/api/auth", authRoutes);
 app.use("/api/photos", photoRoutes);
 app.use("/api/discover", discoverRoutes);
+app.use("/api/swipe", swipeRoutes);
+app.use("/api/matches", matchRoutes);
 
 // Test route
 app.get('/', (req, res) => {
