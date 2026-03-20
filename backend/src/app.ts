@@ -10,6 +10,7 @@ import photoRoutes from "./routes/photo.routes";
 import discoverRoutes from "./routes/discover.routes"
 import swipeRoutes from "./routes/swipe.routes"
 import matchRoutes from "./routes/match.routes"
+import messageRoutes from "./routes/message.routes"
 
 dotenv.config();
   
@@ -29,6 +30,7 @@ app.use("/api/photos", photoRoutes);
 app.use("/api/discover", discoverRoutes);
 app.use("/api/swipe", swipeRoutes);
 app.use("/api/matches", matchRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Test route
 app.get('/', (req, res) => {
