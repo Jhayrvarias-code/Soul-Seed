@@ -29,7 +29,7 @@ export const registerUser = async (userData: Partial<IUser>) => {
   return {
     user: sanitizeUser(newUser),
     token,
-    profileCompletionStatus: newUser.isProfileComplete
+    profileCompletionStatus: newUser.isProfileComplete,
   };
 };
 

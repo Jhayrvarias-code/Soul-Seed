@@ -1,14 +1,13 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { GlobalStateContext } from "../context/GlobalStateProvider";
-import type { ReactNode } from "react";
 
-export default function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { token } = useContext(GlobalStateContext);
+export default function ProtectedRoute() {
+  const { token, loading } = useContext(GlobalStateContext);
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+  if (loading) return <div>Loading...</div>;
 
-  return children;
+  if (!token) return <Navigate to="/" />;
+
+  return <Outlet />;
 }
