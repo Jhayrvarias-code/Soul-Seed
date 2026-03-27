@@ -4,7 +4,7 @@ export interface IMessage extends Document {
   match: mongoose.Types.ObjectId;
   sender: mongoose.Types.ObjectId;
   text: string;
-  status: "sent" | "delivered" | "seen"
+  status: "sent" | "delivered" | "seen";
   createdAt: Date;
 }
 
@@ -26,12 +26,12 @@ const messageSchema = new Schema<IMessage>(
       trim: true,
     },
     status: {
-  type: String,
-  enum: ["sent", "delivered", "seen"],
-  default: "sent",
-}
+      type: String,
+      enum: ["sent", "delivered", "seen"],
+      default: "sent",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model<IMessage>("Message", messageSchema);

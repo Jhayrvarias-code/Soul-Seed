@@ -12,6 +12,7 @@ export interface IUser extends Document {
     location?: string;
     isProfileComplete: boolean;
     interests: string[];
+    lastSeen: Date;
     createdAt: Date;
 }   
 
@@ -81,7 +82,11 @@ const UserSchema: Schema = new Schema(
     interests: {
       type: [String],
       default: []
-    }
+    },
+    lastSeen: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true

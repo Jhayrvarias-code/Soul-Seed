@@ -1,51 +1,51 @@
 import Message from "../models/message.model";
 import Match from "../models/match.model";
 import User from "../models/user.model";
+import mongoose from "mongoose";
+
+const isUserInMatch = (match: any, userId: string) => {
+  return match.user1.toString() === userId || match.user2.toString() === userId;
+};
 
 export const sendMessage = async (
   matchId: string,
   senderId: string,
-  text: string
+  text: string,
 ) => {
-
-// Check if user belongs to match
+  // Check if user belongs to match
   const match = await Match.findById(matchId);
 
   if (!match) {
     throw new Error("Match not found");
   }
 
-  const isParticipant = match.users.some(
-    (userId) => userId.toString() === senderId
-  );
-
-  if (!isParticipant) {
+  // Check if sender belongs to match
+  if (!isUserInMatch(match, senderId)) {
     throw new Error("Unauthorized: Not part of this match");
   }
-    
+
   const message = await Message.create({
-    match: matchId,
-    sender: senderId,
+    match: new mongoose.Types.ObjectId(matchId),
+    sender: new mongoose.Types.ObjectId(senderId),
     text,
   });
 
   return message;
 };
 
-export const getMessages = async (matchId: string, userId: string, cursor?: string) => {
+export const getMessages = async (
+  matchId: string,
+  userId: string,
+  cursor?: string,
+) => {
+  const match = await Match.findById(matchId);
 
-    const match = await Match.findById(matchId);
-    
-// To secure the only matched user can get the message
+  // To secure the only matched user can get the message
   if (!match) {
     throw new Error("Match not found");
   }
 
-  const isParticipant = match.users.some(
-    (id) => id.toString() === userId
-  );
-
-  if (!isParticipant) {
+  if (!isUserInMatch(match, userId)) {
     throw new Error("Unauthorized");
   }
 
@@ -54,19 +54,16 @@ export const getMessages = async (matchId: string, userId: string, cursor?: stri
   if (cursor) {
     query.createdAt = { $lt: new Date(cursor) };
   }
-  
 
   const messages = await Message.find({ match: matchId })
     .populate("sender", "firstName")
     .sort({ createdAt: 1 })
     .limit(20);
 
-    const nextCursor =
-    messages.length > 0
-      ? messages[messages.length - 1].createdAt
-      : null;
+  const nextCursor =
+    messages.length > 0 ? messages[messages.length - 1].createdAt : null;
 
-  return {messages, nextCursor,}
+  return { messages, nextCursor };
 };
 
 export const markAsDelivered = async (messageId: string) => {
