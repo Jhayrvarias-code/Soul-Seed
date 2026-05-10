@@ -8,7 +8,7 @@ export interface Photo {
 
 export const uploadPhoto = async (file: File): Promise<Photo[]> => {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("photo", file);
 
   const res = await api.post("/photos/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -23,6 +23,6 @@ export const deletePhoto = async (photoId: string): Promise<Photo[]> => {
 };
 
 export const setAvatar = async (photoId: string): Promise<Photo[]> => {
-  const res = await api.put(`/photos/avatar/${photoId}`);
+  const res = await api.patch(`/photos/avatar/${photoId}`);
   return res.data.photos;
 };

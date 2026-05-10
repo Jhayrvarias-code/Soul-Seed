@@ -7,68 +7,66 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Heart, MessageCircle, Shield } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <main
-      className=" min-h-screen 
-  bg-gradient-to-br from-blue-50 via-gray-200 to-emerald-50 dark:from-background dark:via-background dark:to-background text-foreground"
-    >
-      {/* Hero Section */}
-      <section className="text-center py-24 px-6">
-        <h1 className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent text-3xl md:text-4xl lg:text-6xl  font-bold mb-6 ">
+    <main className="min-h-[calc(100dvh-3.5rem)] bg-gradient-to-br from-primary/5 via-background to-secondary/10 text-foreground dark:from-background dark:via-background dark:to-secondary/5">
+      <section className="mx-auto max-w-4xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pb-24 sm:pt-24">
+        <h1 className="mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl">
           Welcome to SoulSeed
         </h1>
-        <p className="text-sx md:text-sm lg:text-lg mb-8 max-w-2xl mx-auto">
-          Connect with people who truly align with you. Chat, match, and meet
-          meaningful connections.
+        <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
+          Connect with people who align with you. Match thoughtfully, chat in real time, and
+          build meaningful relationships.
         </p>
-        <div className="flex justify-center gap-4">
-          <Link to="/register">
-            <Button variant="default">Get Started</Button>
+        <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <Link to="/register" className="sm:inline-flex">
+            <Button className="w-full sm:w-auto" size="lg">
+              Get started
+            </Button>
           </Link>
-          <Link to="/login">
-            <Button variant="outline">Login</Button>
+          <Link to="/login" className="sm:inline-flex">
+            <Button variant="outline" className="w-full sm:w-auto" size="lg">
+              Log in
+            </Button>
           </Link>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <Card>
+      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 pb-20 sm:px-6 md:grid-cols-3 md:gap-8">
+        <Card className="border-border/80 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle>Discover People</CardTitle>
+            <Heart className="mb-2 size-8 text-primary" aria-hidden />
+            <CardTitle>Discover people</CardTitle>
             <CardDescription>
-              Find people who match your interests and values.
+              Browse profiles and interests before you decide to match.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            Explore profiles, photos, and hobbies of others before matching.
+          <CardContent className="text-sm text-muted-foreground">
+            SoulSeed helps you focus on compatibility, not endless scrolling.
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/80 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle>Real-Time Chat</CardTitle>
-            <CardDescription>
-              Communicate instantly with your matches.
-            </CardDescription>
+            <MessageCircle className="mb-2 size-8 text-primary" aria-hidden />
+            <CardTitle>Real-time chat</CardTitle>
+            <CardDescription>Talk to matches as soon as you connect.</CardDescription>
           </CardHeader>
-          <CardContent>
-            Messages delivered instantly, with read receipts and typing
-            indicators.
+          <CardContent className="text-sm text-muted-foreground">
+            Fast, simple messaging so you can keep the conversation going.
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/80 shadow-sm transition-shadow hover:shadow-md md:col-span-1">
           <CardHeader>
-            <CardTitle>Safe & Secure</CardTitle>
-            <CardDescription>
-              We prioritize your privacy and security.
-            </CardDescription>
+            <Shield className="mb-2 size-8 text-primary" aria-hidden />
+            <CardTitle>Built for trust</CardTitle>
+            <CardDescription>Secure sign-in and respect for your data.</CardDescription>
           </CardHeader>
-          <CardContent>
-            JWT-based authentication and secure data handling.
+          <CardContent className="text-sm text-muted-foreground">
+            Authentication and sensible defaults so you can focus on meeting people.
           </CardContent>
         </Card>
       </section>

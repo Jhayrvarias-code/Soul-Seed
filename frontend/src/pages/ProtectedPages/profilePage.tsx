@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { getCurrentUser } from "@/services/userService";
+import { getCurrentUser, type User } from "@/services/userService";
 import { calculateAge } from "@/utils/ageCalculator";
-import { Edit2, MapPin, Heart, User, Calendar } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
-
-type User = {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  birthdate: string;
-  bio: string;
-  interests?: string[];
-  photos?: { url: string; isAvatar: boolean }[];
-};
+import { Edit2, MapPin, Heart, User as UserIcon } from "lucide-react";
+import EditProfileModal from "@/components/modal/editProfile";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,87 +26,133 @@ export default function ProfilePage() {
     fetchUser();
   }, []);
 
-  if (loadingProfile)
+  if (loadingProfile) return <ProfileSkeleton />;
+
+  if (!user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Spinner />
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
+        <p className="text-muted-foreground">We couldn&apos;t load your profile.</p>
+        <Button type="button" variant="outline" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
       </div>
     );
-  if (!user) return <div className="text-center mt-20">User not found</div>;
+  }
 
+  const avatarUrl = user.photos?.find((p) => p.isAvatar)?.url ?? null;
   const age = calculateAge(user.birthdate);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-200 to-emerald-50 dark:from-background dark:via-background dark:to-background p-4 md:p-8 flex justify-center">
-      <Card className="w-full max-w-2xl overflow-hidden border-none shadow-2xl rounded-[2rem]">
-        {/* Hero Section: Photo */}
-        <div className="relative h-[400px] w-full bg-muted">
-          <img
-            src={user.photos?.find((p) => p.isAvatar)?.url}
-            alt={user.firstName}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-            <div className="flex items-end justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">
-                  {user.firstName} {user.lastName}
-                </h1>
-                <p className="flex items-center gap-1 text-sm opacity-90 mt-1">
-                  <User className="w-3 h-3" /> Member
-                </p>
+    <>
+      <main className="flex flex-1 justify-center bg-gradient-to-b from-primary/[0.06] via-background to-background px-4 py-8 dark:from-primary/10 md:px-8">
+        <div className="flex w-full max-w-2xl flex-col gap-8">
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <div className="size-40 overflow-hidden rounded-full border-4 border-background bg-muted shadow-xl ring-1 ring-border sm:size-52 md:size-60">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <UserIcon className="size-full p-10 text-muted-foreground sm:p-12" />
+                )}
               </div>
-              <Button
-                size="icon"
-                variant="secondary"
-                className="rounded-full shadow-lg"
-              >
-                <Edit2 className="w-4 h-4" />
-              </Button>
             </div>
           </div>
-        </div>
 
-        <CardContent className="p-6 space-y-6">
-          {/* Bio Section */}
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              About Me
-            </h3>
-            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-              {user.bio || "Write something interesting about yourself..."}
-            </p>
-          </section>
-
-          <Separator className="opacity-50" />
-
-          {/* Interests Section */}
-          {user.interests && user.interests.length > 0 && (
-            <section className="space-y-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                <Heart className="w-4 h-4" />
-                <span>Interests</span>
+          <CardContent className="space-y-8 px-0 sm:px-2">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="min-w-0 text-center sm:text-left">
+                <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                  {user.firstName} {user.lastName}
+                  {Number.isFinite(age) ? (
+                    <span className="ml-2 text-xl font-semibold text-muted-foreground">
+                      {age}
+                    </span>
+                  ) : null}
+                </h1>
+                <div className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-medium text-muted-foreground sm:justify-start">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="size-4 shrink-0" /> Philippines
+                  </span>
+                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                    <span className="size-2 animate-pulse rounded-full bg-emerald-500" />
+                    Active now
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {user.interests.map((interest, i) => (
-                  <Badge
-                    key={i}
-                    variant="secondary"
-                    className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100 transition-colors"
-                  >
-                    {interest}
-                  </Badge>
-                ))}
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEditOpen(true)}
+                  className="rounded-full gap-2"
+                >
+                  <Edit2 className="size-4" /> Edit profile
+                </Button>
+                <EditProfileModal
+                  open={isEditOpen}
+                  onClose={() => setIsEditOpen(false)}
+                  user={user}
+                  onSuccess={(updatedUser) => setUser(updatedUser)}
+                />
               </div>
+            </div>
+
+            <section className="space-y-2">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                About
+              </h2>
+              <p className="leading-relaxed text-foreground/90">
+                {user.bio?.trim() || "This user hasn&apos;t written a bio yet."}
+              </p>
             </section>
-          )}
 
-          {/* Primary Action */}
-          <Button className="w-full py-6 rounded-2xl text-lg font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 transition-all shadow-md">
-            Edit Your Profile
-          </Button>
-        </CardContent>
-      </Card>
+            {user.interests && user.interests.length > 0 ? (
+              <section className="space-y-3">
+                <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  <Heart className="size-3 fill-rose-500 text-rose-500" />
+                  Interests
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {user.interests.map((interest, i) => (
+                    <Badge
+                      key={`${interest}-${i}`}
+                      variant="secondary"
+                      className="rounded-full border-0 bg-muted px-4 py-1.5 font-normal hover:scale-105"
+                    >
+                      {interest}
+                    </Badge>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+          </CardContent>
+        </div>
+      </main>
+    </>
+  );
+}
+
+export function ProfileSkeleton() {
+  return (
+    <main className="flex flex-1 justify-center px-4 py-8 md:px-8">
+      <div className="w-full max-w-2xl space-y-8 animate-pulse">
+        <div className="flex justify-center">
+          <div className="size-52 rounded-full bg-muted md:size-60" />
+        </div>
+        <div className="mx-auto h-8 w-48 rounded bg-muted sm:mx-0" />
+        <div className="space-y-2 px-2">
+          <div className="h-4 rounded bg-muted" />
+          <div className="h-4 w-5/6 rounded bg-muted" />
+        </div>
+        <div className="flex flex-wrap gap-2 px-2">
+          <div className="h-8 w-16 rounded-full bg-muted" />
+          <div className="h-8 w-20 rounded-full bg-muted" />
+          <div className="h-8 w-14 rounded-full bg-muted" />
+        </div>
+      </div>
     </main>
   );
 }

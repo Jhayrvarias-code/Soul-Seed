@@ -69,7 +69,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         setToken(savedToken);
 
         // fetch user
-        const userData = await getCurrentUser;
+        const userData = await getCurrentUser();
         setUser(userData);
       } catch (err) {
         // token invalid → logout

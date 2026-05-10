@@ -24,11 +24,19 @@ export const sendMessage = async (
     throw new Error("Unauthorized: Not part of this match");
   }
 
-  const message = await Message.create({
+  const created = await Message.create({
     match: new mongoose.Types.ObjectId(matchId),
     sender: new mongoose.Types.ObjectId(senderId),
     text,
   });
+
+  const message = await Message.findById(created._id)
+    .populate("sender", "firstName")
+    .exec();
+
+  if (!message) {
+    throw new Error("Message not found after create");
+  }
 
   return message;
 };

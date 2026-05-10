@@ -1,24 +1,18 @@
 import { Outlet } from "react-router-dom";
 import LandingPage from "@/pages/landingPage";
 import Navbar from "@/components/Navbar";
-// import { useNavigate } from "react-router-dom";
-// import { X } from "lucide-react";
 
 export default function AuthLayout() {
-  // const navigate = useNavigate();
   return (
-    <div className="relative min-h-screen m-0 p-0">
-      {/* Background */}
+    <div className="relative min-h-dvh">
       <div className="absolute inset-0 z-0">
         <Navbar />
         <LandingPage />
       </div>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40  z-10" />
+      <div className="absolute inset-0 z-10 bg-background/85 backdrop-blur-[2px] dark:bg-background/90" />
 
-      {/* Content */}
-      <div className="relative z-20 flex items-center justify-center min-h-screen">
+      <div className="relative z-20 flex min-h-dvh items-center justify-center px-4 py-8 sm:py-12">
         <Outlet />
       </div>
     </div>

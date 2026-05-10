@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import User, { IUser } from "../models/user.model";
 import { generateToken } from "../utils/generateToken";
 import { sanitizeUser } from "../utils/sanitizeUser";
+import crypto from "crypto";
+import RefreshToken from "../models/refreshTokenModel";
 
 const SALT_ROUNDS = 10;
 
@@ -21,7 +23,7 @@ export const registerUser = async (userData: Partial<IUser>) => {
 
   const newUser = await User.create({
     ...userData,
-    password: hashedPassword
+    password: hashedPassword,
   });
 
   const token = generateToken(newUser._id.toString());
@@ -49,11 +51,29 @@ export const loginUser = async (email: string, password: string) => {
     throw new Error("Invalid email or password");
   }
 
-  const token = generateToken(user._id.toString());
+  const AccessToken = generateToken(user._id.toString());
+
+  const refreshToken = crypto.randomBytes(64).toString("hex");
+
+  await RefreshToken.create({
+    userId: user._id.toString(),
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+  });
 
   return {
     user: sanitizeUser(user),
-    token,
-    profileCompletionStatus: user.isProfileComplete
+    token: AccessToken,
+    refreshToken: refreshToken,
+    profileCompletionStatus: user.isProfileComplete,
   };
+};
+
+export const logoutUser = async (refreshToken: string) => {
+  if (!refreshToken) {
+    throw new Error("Refresh token is required for logout");
+  }
+
+  await RefreshToken.findOneAndDelete({ token: refreshToken });
+  return { message: "Logged out successfully" };
 };

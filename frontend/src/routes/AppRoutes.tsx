@@ -12,11 +12,12 @@ import { Spinner } from "@/components/ui/spinner";
 const LoginPage = lazy(() => import("../pages/loginPage"));
 const RegisterPage = lazy(() => import("../pages/registerPage"));
 // const ProfilePage = lazy(() => import("../pages/profilePage"));
-const LandingPage = lazy(() => import("@/pages/landingPage"));
+import LandingPage from "@/pages/landingPage";
 const DashboardPage = lazy(
   () => import("@/pages/ProtectedPages/dashboardPage"),
 );
 const ProfilePage = lazy(() => import("@/pages/ProtectedPages/profilePage"));
+const MessagesPage = lazy(() => import("@/pages/ProtectedPages/messagePage"));
 
 export default function AppRoutes() {
   return (
@@ -46,6 +47,7 @@ export default function AppRoutes() {
           <Route element={<PrivateLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/messages" element={<MessagesPage />} />
           </Route>
         </Route>
 
