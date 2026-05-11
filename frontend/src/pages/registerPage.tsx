@@ -81,17 +81,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-fit rounded-lg bg-background text-foreground">
-      <Card className="w-[400px] p-4">
-        <CardContent className="relative">
+    <div className="w-full max-w-md rounded-xl bg-background/95 p-1 text-foreground shadow-2xl ring-1 ring-border/60 backdrop-blur-sm dark:bg-card/95 sm:max-w-lg">
+      <Card className="max-h-[min(90dvh,44rem)] overflow-y-auto border-0 bg-transparent shadow-none">
+        <CardContent className="relative px-5 pb-6 pt-8 sm:px-8">
           <button
+            type="button"
             onClick={() => navigate("/")}
-            className="absolute top-1 right-1 z-10 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition"
+            className="absolute right-2 top-2 z-10 rounded-full p-2 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="size-5" />
           </button>
 
-          <h2 className="text-xl font-bold mb-4 mt-5">Register</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">Create account</h2>
 
           <form onSubmit={handleRegister} className="space-y-3">
             {/* First Name */}
@@ -136,10 +138,10 @@ export default function RegisterPage() {
             <div>
               <Label>Gender</Label>
               <Select onValueChange={setGender}>
-                <SelectTrigger className="w-full max-w-48">
+                <SelectTrigger className="h-10 w-full">
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#FFFFFF]">
+                <SelectContent className="bg-card">
                   <SelectItem value="Male">Male</SelectItem>
                   <SelectItem value="Female">Female</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
@@ -225,13 +227,13 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full mt-4">
+            <Button type="submit" className="mt-4 h-10 w-full">
               Register
             </Button>
-            <p className="text-center mt-2">
+            <p className="mt-2 text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link to="/login" className="text-blue-500 hover:underline">
-                Login
+              <Link to="/login" className="font-medium text-primary hover:underline">
+                Log in
               </Link>
             </p>
           </form>

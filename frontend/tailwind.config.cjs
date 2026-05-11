@@ -13,6 +13,9 @@ module.exports = {
         card: "hsl(var(--card))",
         "card-foreground": "hsl(var(--card-foreground))",
 
+        accent: "hsl(var(--accent))",
+        "accent-foreground": "hsl(var(--accent-foreground))",
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

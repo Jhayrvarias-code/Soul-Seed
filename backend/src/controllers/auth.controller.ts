@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerUser, loginUser } from "../services/auth.service";
+import { registerUser, loginUser, logoutUser } from "../services/auth.service";
 import { loginSchema, registerSchema } from "../validators/auth.validators";
 
 /*
@@ -70,6 +70,28 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// export const logout = (req: Request, res: Response) => {
-//   return res.status(200).json({ message: "Logged out" });
-// };
+/*
+LOGOUT CONTROLLER
+*/
+export const logout = async (req: Request, res: Response) => {
+  try {
+    // Optional: get token from header
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(400).json({
+        message: "Token required",
+      });
+    }
+
+    await logoutUser(token);
+
+    return res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message || "Logout failed",
+    });
+  }
+};

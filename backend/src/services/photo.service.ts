@@ -16,9 +16,8 @@ export const addPhoto = async (
   userId: string,
   photoUrl: string,
   publicId: string,
-  isAvatar: boolean = false
+  isAvatar: boolean = false,
 ) => {
-
   const user = await User.findById(userId);
 
   if (!user) {
@@ -29,17 +28,17 @@ export const addPhoto = async (
     throw new Error("Maximum of 9 photos allowed");
   }
 
- // Check if an avatar already exists
-  const hasAvatar = user.photos.some(photo => photo.isAvatar);
+  // Check if an avatar already exists
+  const hasAvatar = user.photos.some((photo) => photo.isAvatar);
 
   // If no avatar exists, force this photo to be avatar
   const finalIsAvatar = hasAvatar ? isAvatar : true;
 
   if (finalIsAvatar) {
-  user.photos.forEach(photo => {
-    photo.isAvatar = false;
-  });
-}
+    user.photos.forEach((photo) => {
+      photo.isAvatar = false;
+    });
+  }
 
   // Add new photo to DB
   user.photos.push({
@@ -48,11 +47,9 @@ export const addPhoto = async (
     isAvatar: finalIsAvatar,
   });
 
-
   await user.save();
 
   return user.photos;
-
 };
 
 /**
@@ -108,17 +105,20 @@ export const setAvatar = async (userId: string, photoId: string) => {
 
   const photo = photos.id(photoId); // now TypeScript knows 'id' exists
 
-  if (!photo) {
-    throw new Error("Photo not found");
-  }
+  let found = false;
 
-  //
   photos.forEach((p) => {
-    p.isAvatar = photo._id.toString() === photoId;
+    if (p._id.toString() === photoId) {
+      p.isAvatar = true;
+      found = true;
+    } else {
+      p.isAvatar = false;
+    }
   });
 
-  // Set selected photo as avatar
-  photo.isAvatar = true;
+  if (!found) {
+    throw new Error("Photo not found");
+  }
 
   await user.save();
 
