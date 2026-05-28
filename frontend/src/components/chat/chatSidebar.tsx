@@ -10,15 +10,20 @@ type ChatSidebarProps = {
   onSelect: (match: Match) => void;
 };
 
-export default function ChatSidebar({ selectedId, onSelect }: ChatSidebarProps) {
+export default function ChatSidebar({
+  selectedId,
+  onSelect,
+}: ChatSidebarProps) {
   const [matches, setMatches] = useState<Match[]>([]);
   const { user } = useContext(GlobalStateContext);
 
   useEffect(() => {
+    if (!user) return;
+
     getMatches()
       .then(setMatches)
       .catch((err) => console.error("Failed to load matches", err));
-  }, []);
+  }, [user]);
 
   if (!user) {
     return (
@@ -37,14 +42,20 @@ export default function ChatSidebar({ selectedId, onSelect }: ChatSidebarProps) 
       <div className="flex-1 space-y-0.5 overflow-y-auto p-2">
         {matches.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 px-4 py-12 text-center">
-            <MessageCircle className="size-10 text-muted-foreground/50" aria-hidden />
-            <p className="text-sm text-muted-foreground">No matches yet. Keep swiping!</p>
+            <MessageCircle
+              className="size-10 text-muted-foreground/50"
+              aria-hidden
+            />
+            <p className="text-sm text-muted-foreground">
+              No matches yet. Keep swiping!
+            </p>
           </div>
         ) : (
           matches.map((match) => {
             const otherUser =
               match.user1._id === user._id ? match.user2 : match.user1;
-            const initial = otherUser.firstName?.charAt(0)?.toUpperCase() || "?";
+            const initial =
+              otherUser.firstName?.charAt(0)?.toUpperCase() || "?";
             const isActive = match._id === selectedId;
 
             return (
@@ -66,7 +77,9 @@ export default function ChatSidebar({ selectedId, onSelect }: ChatSidebarProps) 
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{otherUser.firstName}</p>
-                  <p className="truncate text-xs text-muted-foreground">Tap to open chat</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    Tap to open chat
+                  </p>
                 </div>
               </button>
             );
