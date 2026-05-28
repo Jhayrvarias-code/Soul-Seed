@@ -45,13 +45,13 @@ export const GlobalStateContext = createContext<GlobalStateType>({
 // 3. Define provider component
 export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setTokenState] = useState<string | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const logout = () => {
     localStorage.removeItem("token");
-    setToken(null);
+    setTokenState(null);
     setUser(null);
   };
 
@@ -66,7 +66,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
-        setToken(savedToken);
+        setTokenState(savedToken);
 
         // fetch user
         const userData = await getCurrentUser();
@@ -74,7 +74,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       } catch (err) {
         // token invalid → logout
         localStorage.removeItem("token");
-        setToken(null);
+        setTokenState(null);
         setUser(null);
       } finally {
         setLoading(false);
@@ -83,6 +83,30 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
     initAuth();
   }, []);
+
+  // wrapper that persists token and fetches user when token is set
+  const setToken = async (newToken: string | null) => {
+    setTokenState(newToken);
+
+    if (!newToken) {
+      localStorage.removeItem("token");
+      setUser(null);
+      return;
+    }
+
+    // persist token immediately so API calls can read it
+    localStorage.setItem("token", newToken);
+
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch (err) {
+      // token invalid
+      localStorage.removeItem("token");
+      setTokenState(null);
+      setUser(null);
+    }
+  };
 
   // 4. Provide state and setters to all children
   return (
