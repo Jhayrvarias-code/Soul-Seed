@@ -1,6 +1,8 @@
 const { io } = require("socket.io-client");
 
-const socket = io(process.env.VITE_REACT_APP_API_URL);
+const socket = io(
+  import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:3000",
+);
 
 socket.on("connect", () => {
   console.log("Connected to server:", socket.id);
