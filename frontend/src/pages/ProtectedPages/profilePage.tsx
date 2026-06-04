@@ -31,14 +31,8 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center">
-        <p className="text-muted-foreground">
-          We couldn&apos;t load your profile.
-        </p>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => window.location.reload()}
-        >
+        <p className="text-muted-foreground">We couldn&apos;t load your profile.</p>
+        <Button type="button" variant="outline" onClick={() => window.location.reload()}>
           Retry
         </Button>
       </div>
@@ -111,7 +105,7 @@ export default function ProfilePage() {
                 About
               </h2>
               <p className="leading-relaxed text-foreground/90">
-                {user.bio?.trim() || "This user hasn't written a bio yet."}
+                {user.bio?.trim() || "This user hasn&apos;t written a bio yet."}
               </p>
             </section>
 

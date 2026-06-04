@@ -93,9 +93,7 @@ export default function RegisterPage() {
             <X className="size-5" />
           </button>
 
-          <h2 className="mb-6 text-2xl font-bold tracking-tight">
-            Create account
-          </h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">Create account</h2>
 
           <form onSubmit={handleRegister} className="space-y-3">
             {/* First Name */}
@@ -143,7 +141,7 @@ export default function RegisterPage() {
                 <SelectTrigger className="h-10 w-full">
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
-                <SelectContent className="bg-card text-foreground">
+                <SelectContent className="bg-card">
                   <SelectItem value="Male">Male</SelectItem>
                   <SelectItem value="Female">Female</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
@@ -234,10 +232,7 @@ export default function RegisterPage() {
             </Button>
             <p className="mt-2 text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-primary hover:underline"
-              >
+              <Link to="/login" className="font-medium text-primary hover:underline">
                 Log in
               </Link>
             </p>
