@@ -1,6 +1,6 @@
 const { io } = require("socket.io-client");
 
-const socket = io("http://localhost:3000");
+const socket = io(process.env.VITE_REACT_APP_API_URL);
 
 socket.on("connect", () => {
   console.log("Connected to server:", socket.id);
@@ -12,7 +12,7 @@ socket.on("connect", () => {
   socket.emit("sendMessage", {
     roomId: "room123",
     message: "Hello from test client",
-    senderId: "user1"
+    senderId: "user1",
   });
 });
 
