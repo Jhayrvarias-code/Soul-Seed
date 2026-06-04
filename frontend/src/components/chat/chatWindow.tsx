@@ -23,23 +23,27 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
   const seenEmittedIdsRef = useRef<Set<string>>(new Set());
 
   const { user, token } = useContext(GlobalStateContext);
-  const socketRef = useSocket(token ?? localStorage.getItem("token"));
+  const { socketRef, connected } = useSocket(
+    token ?? localStorage.getItem("token"),
+  );
 
-  const otherUser =
-    user?._id === match.user1._id ? match.user2 : match.user1;
+  const otherUser = user?._id === match.user1._id ? match.user2 : match.user1;
 
   const isMine = useCallback(
     (msg: Message) => getSenderId(msg.sender) === user?._id,
     [user?._id],
   );
 
-  const updateMessageStatus = useCallback((messageId: string, status: Message["status"]) => {
-    setMessages((prev) =>
-      prev.map((m) =>
-        messageIdString(m._id) === messageId ? { ...m, status } : m,
-      ),
-    );
-  }, []);
+  const updateMessageStatus = useCallback(
+    (messageId: string, status: Message["status"]) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          messageIdString(m._id) === messageId ? { ...m, status } : m,
+        ),
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     seenEmittedIdsRef.current.clear();
@@ -49,7 +53,9 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
 
   useEffect(() => {
     const socket = socketRef.current;
-    socket?.emit("join_match", match._id);
+    if (!socket || !connected) return;
+
+    socket.emit("join_match", match._id);
 
     getMessages(match._id)
       .then((res) => {
@@ -84,24 +90,25 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
       setOtherTyping(false);
     };
 
-    socket?.on("receive_message", handleMessage);
-    socket?.on("message_delivered", handleDelivered);
-    socket?.on("message_seen", handleSeen);
-    socket?.on("typing", handleTyping);
-    socket?.on("stop_typing", handleStopTyping);
+    socket.on("receive_message", handleMessage);
+    socket.on("message_delivered", handleDelivered);
+    socket.on("message_seen", handleSeen);
+    socket.on("typing", handleTyping);
+    socket.on("stop_typing", handleStopTyping);
 
     return () => {
-      socket?.off("receive_message", handleMessage);
-      socket?.off("message_delivered", handleDelivered);
-      socket?.off("message_seen", handleSeen);
-      socket?.off("typing", handleTyping);
-      socket?.off("stop_typing", handleStopTyping);
+      socket.off("receive_message", handleMessage);
+      socket.off("message_delivered", handleDelivered);
+      socket.off("message_seen", handleSeen);
+      socket.off("typing", handleTyping);
+      socket.off("stop_typing", handleStopTyping);
       if (typingClearRef.current) clearTimeout(typingClearRef.current);
     };
-  }, [match._id, socketRef, updateMessageStatus, user?._id]);
+  }, [match._id, socketRef, connected, updateMessageStatus, user?._id]);
 
   useEffect(() => {
-    if (!user?._id || !messages.length || !socketRef.current) return;
+    if (!user?._id || !messages.length || !socketRef.current || !connected)
+      return;
 
     const latestInbound = [...messages]
       .reverse()
@@ -117,7 +124,7 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
       matchId: match._id,
       messageId: id,
     });
-  }, [match._id, messages, socketRef, user?._id]);
+  }, [match._id, messages, socketRef, connected, user?._id]);
 
   const statusHint = (msg: Message): string => {
     if (!isMine(msg)) return "";
@@ -168,7 +175,10 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
           return (
             <div
               key={key}
-              className={cn("flex flex-col gap-0.5", mine ? "items-end" : "items-start")}
+              className={cn(
+                "flex flex-col gap-0.5",
+                mine ? "items-end" : "items-start",
+              )}
             >
               <div
                 className={cn(
