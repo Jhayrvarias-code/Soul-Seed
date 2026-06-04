@@ -49,6 +49,10 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
     seenEmittedIdsRef.current.clear();
     setMessages([]);
     setOtherTyping(false);
+
+    getMessages(match._id)
+      .then((res) => setMessages(res.messages))
+      .catch((err) => console.error("Failed to load messages", err));
   }, [match._id]);
 
   useEffect(() => {
@@ -56,12 +60,6 @@ export default function ChatWindow({ match, onBack }: ChatWindowProps) {
     if (!socket || !connected) return;
 
     socket.emit("join_match", match._id);
-
-    getMessages(match._id)
-      .then((res) => {
-        setMessages(res.messages);
-      })
-      .catch((err) => console.error("Failed to load messages", err));
 
     const handleMessage = (msg: Message) => {
       setMessages((prev) => [...prev, msg]);
