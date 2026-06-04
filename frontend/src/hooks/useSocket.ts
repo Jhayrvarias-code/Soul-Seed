@@ -21,6 +21,7 @@ export const useSocket = (token: string | null | undefined) => {
     });
 
     socketRef.current = socket;
+    setConnected(socket.connected);
 
     const onConnect = () => setConnected(true);
     const onDisconnect = () => setConnected(false);
