@@ -1,7 +1,8 @@
 import { Server} from 'socket.io';
 import jwt from "jsonwebtoken";
 import * as messageService from "../services/message.service";
-import {addUser, removeUser, getOnlineUsers, isUserOnline} from "./onlineUsers"
+import {addUser, removeUser, getOnlineUsers, isUserOnline} from "./onlineUsers";
+import { isOriginAllowed } from "../config/cors";
 
 interface JwtPayload {
   id: string;
@@ -10,11 +11,18 @@ interface JwtPayload {
 
 // Initialize Socket.io
 export const initSocket = (server: any) => {
-  const io = new Server (server, {
-  cors: {
-    origin: '*', // Update with frontend URL in production
-  }
-});
+  const io = new Server(server, {
+    cors: {
+      origin: (origin, callback) => {
+        if (isOriginAllowed(origin)) {
+          callback(null, origin ?? true);
+        } else {
+          callback(null, false);
+        }
+      },
+      credentials: true,
+    },
+  });
 
 // Auth
  io.use((socket, next) => {
