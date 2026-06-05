@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { getApiBaseUrl } from "@/config/api";
 
 export const useSocket = (token: string | null | undefined) => {
   const socketRef = useRef<Socket | null>(null);
@@ -15,7 +16,7 @@ export const useSocket = (token: string | null | undefined) => {
       return;
     }
 
-    const socket = io("http://localhost:3000", {
+    const socket = io(getApiBaseUrl(), {
       auth: { token },
       autoConnect: true,
     });
