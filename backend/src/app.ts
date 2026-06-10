@@ -11,14 +11,13 @@ import discoverRoutes from "./routes/discover.routes";
 import swipeRoutes from "./routes/swipe.routes";
 import matchRoutes from "./routes/match.routes";
 import messageRoutes from "./routes/message.routes";
-import { isOriginAllowed } from "./config/cors";
+import { isOriginAllowed } from "./config/allowedOrigins";
 import { connectMongo } from "./lib/mongoose";
 
 dotenv.config();
 
 const app = express();
 
-// Use the shared `isOriginAllowed` from ./config/cors
 const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
     if (isOriginAllowed(origin)) {

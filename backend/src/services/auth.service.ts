@@ -13,6 +13,10 @@ REGISTER USER
 export const registerUser = async (userData: Partial<IUser>) => {
   const { email, password } = userData;
 
+  if (!email || !password) {
+    throw new Error("Email and password are required");
+  }
+
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {

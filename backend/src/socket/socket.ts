@@ -2,7 +2,7 @@ import { Server} from 'socket.io';
 import jwt from "jsonwebtoken";
 import * as messageService from "../services/message.service";
 import {addUser, removeUser, getOnlineUsers, isUserOnline} from "./onlineUsers";
-import { isOriginAllowed } from "../config/cors";
+import { isOriginAllowed } from "../config/allowedOrigins";
 
 interface JwtPayload {
   id: string;
