@@ -2,7 +2,7 @@ import axios from "axios";
 import { getApiBaseUrl } from "@/config/api";
 
 export const api = axios.create({
-  baseURL: `${getApiBaseUrl()}`,
+  baseURL: `${getApiBaseUrl()}/api`,
   headers: { "Content-Type": "application/json" },
 });
 
