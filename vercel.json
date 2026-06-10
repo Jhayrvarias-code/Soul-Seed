@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": false,
   "experimentalServices": {
     "frontend": {
       "entrypoint": "frontend",
@@ -11,5 +12,11 @@
       "routePrefix": "/api",
       "framework": "express"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
