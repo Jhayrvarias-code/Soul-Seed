@@ -12,11 +12,5 @@
       "routePrefix": "/api",
       "framework": "express"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
-    }
-  ]
+  }
 }
