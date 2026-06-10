@@ -48,13 +48,21 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 
-app.use("/api/users", router);
-app.use("/api/auth", authRoutes);
-app.use("/api/photos", photoRoutes);
-app.use("/api/discover", discoverRoutes);
-app.use("/api/swipe", swipeRoutes);
-app.use("/api/matches", matchRoutes);
-app.use("/api/messages", messageRoutes);
+function mountRoutes(prefix: string) {
+  const base = prefix ? `${prefix}` : "";
+  app.use(`${base}/users`, router);
+  app.use(`${base}/auth`, authRoutes);
+  app.use(`${base}/photos`, photoRoutes);
+  app.use(`${base}/discover`, discoverRoutes);
+  app.use(`${base}/swipe`, swipeRoutes);
+  app.use(`${base}/matches`, matchRoutes);
+  app.use(`${base}/messages`, messageRoutes);
+}
+
+// Local dev: full path `/api/auth/...`
+mountRoutes("/api");
+// Vercel Services: strips `/api` prefix → `/auth/...`
+mountRoutes("");
 
 app.get("/", (_req, res) => {
   res.send("API is running...");
