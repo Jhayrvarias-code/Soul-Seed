@@ -106,10 +106,10 @@ export const initSocket = (server: any) => {
             _id: msg._id?.toString?.() ?? msg._id,
             match: msg.match?.toString?.() ?? msg.match,
             sender:
-              msg.sender && typeof msg.sender === "object"
+              msg.sender && typeof msg.sender === "object" && "firstName" in msg.sender
                 ? {
-                    _id: msg.sender._id?.toString?.() ?? msg.sender._id,
-                    firstName: msg.sender.firstName,
+                    _id: (msg.sender as any)._id?.toString?.() ?? (msg.sender as any)._id,
+                    firstName: (msg.sender as any).firstName,
                   }
                 : msg.sender,
             text: msg.text,
