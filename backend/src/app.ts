@@ -48,13 +48,13 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 
-app.use("/users", router);
-app.use("/auth", authRoutes);
-app.use("/photos", photoRoutes);
-app.use("/discover", discoverRoutes);
-app.use("/swipe", swipeRoutes);
-app.use("/matches", matchRoutes);
-app.use("/messages", messageRoutes);
+app.use("/api/users", router);
+app.use("/api/auth", authRoutes);
+app.use("/api/photos", photoRoutes);
+app.use("/api/discover", discoverRoutes);
+app.use("/api/swipe", swipeRoutes);
+app.use("/api/matches", matchRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.get("/", (_req, res) => {
   res.send("API is running...");
