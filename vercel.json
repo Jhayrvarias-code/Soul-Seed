@@ -8,8 +8,7 @@
     "backend": {
       "entrypoint": "backend",
       "routePrefix": "/api",
-      "framework": "express",
-      "stripRoutePrefix": true
+      "framework": "express"
     }
   }
 }
