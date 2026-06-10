@@ -19,11 +19,14 @@ dotenv.config();
 const app = express();
 
 const corsOptions: cors.CorsOptions = {
-  origin(origin, callback) {
-    if (isOriginAllowed(origin)) {
-      callback(null, origin ?? true);
+  origin: (origin, callback) => {
+    const allowed = isOriginAllowed(origin);
+
+    if (!origin || allowed) {
+      callback(null, true);
     } else {
-      callback(null, false);
+      console.log("Blocked CORS origin:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
