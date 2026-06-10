@@ -18,18 +18,7 @@ dotenv.config();
 
 const app = express();
 
-function isOriginAllowed(origin: string | undefined): boolean {
-  // Allow server-to-server requests or tools like Postman/cURL where origin is omitted
-  if (!origin) return true;
-
-  const allowedOrigins = [
-    "http://localhost:5173", // Your local Vite development server
-    process.env.FRONTEND_URL, // Your live Vercel production deployment domain
-  ];
-
-  return allowedOrigins.includes(origin);
-}
-
+// Use the shared `isOriginAllowed` from ./config/cors
 const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
     if (isOriginAllowed(origin)) {
@@ -60,13 +49,13 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 
-app.use("/api/users", router);
-app.use("/api/auth", authRoutes);
-app.use("/api/photos", photoRoutes);
-app.use("/api/discover", discoverRoutes);
-app.use("/api/swipe", swipeRoutes);
-app.use("/api/matches", matchRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/users", router);
+app.use("/auth", authRoutes);
+app.use("/photos", photoRoutes);
+app.use("/discover", discoverRoutes);
+app.use("/swipe", swipeRoutes);
+app.use("/matches", matchRoutes);
+app.use("/messages", messageRoutes);
 
 app.get("/", (_req, res) => {
   res.send("API is running...");

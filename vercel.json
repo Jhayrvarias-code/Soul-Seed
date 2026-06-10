@@ -9,7 +9,7 @@
       "root": "backend",
       "routePrefix": "/api",
       "framework": "express",
-      "stripRoutePrefix": false
+      "stripRoutePrefix": true
     }
   }
 }
