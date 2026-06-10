@@ -11,24 +11,12 @@ import discoverRoutes from "./routes/discover.routes";
 import swipeRoutes from "./routes/swipe.routes";
 import matchRoutes from "./routes/match.routes";
 import messageRoutes from "./routes/message.routes";
-import { isOriginAllowed } from "./config/cors";
+import { isOriginAllowed } from "./config/allowedOrigins";
 import { connectMongo } from "./lib/mongoose";
 
 dotenv.config();
 
 const app = express();
-
-function isOriginAllowed(origin: string | undefined): boolean {
-  // Allow server-to-server requests or tools like Postman/cURL where origin is omitted
-  if (!origin) return true;
-
-  const allowedOrigins = [
-    "http://localhost:5173", // Your local Vite development server
-    process.env.FRONTEND_URL, // Your live Vercel production deployment domain
-  ];
-
-  return allowedOrigins.includes(origin);
-}
 
 const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
