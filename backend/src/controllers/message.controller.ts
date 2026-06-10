@@ -32,7 +32,7 @@ export const sendMessage = async (req: Request, res: Response) => {
       createdAt: msg.createdAt,
     };
 
-    res.status(201).json({ message: "Message sent", message: messagePayload });
+    res.status(201).json({ message: "Message sent", data: messagePayload });
   } catch (error: any) {
     res.status(500).json({
       message: error.message,
