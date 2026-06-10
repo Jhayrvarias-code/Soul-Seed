@@ -33,7 +33,7 @@ function isOriginAllowed(origin: string | undefined): boolean {
 const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
     if (isOriginAllowed(origin)) {
-      callback(null, true);
+      callback(null, origin ?? true);
     } else {
       callback(null, false);
     }
