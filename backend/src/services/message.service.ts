@@ -57,16 +57,35 @@ export const getMessages = async (
     throw new Error("Unauthorized");
   }
 
-  let query: any = { match: matchId }; //Query
+  // Build query using ObjectId to avoid mismatches between string and ObjectId
+  const query: any = { match: new mongoose.Types.ObjectId(matchId) };
 
   if (cursor) {
     query.createdAt = { $lt: new Date(cursor) };
   }
 
-  const messages = await Message.find({ match: matchId })
+  // Use lean() to return plain objects, then normalize IDs to strings so
+  // controllers and clients receive consistent JSON-friendly data.
+  const rawMessages = await Message.find(query)
     .populate("sender", "firstName")
     .sort({ createdAt: 1 })
-    .limit(20);
+    .limit(20)
+    .lean();
+
+  const messages = rawMessages.map((msg: any) => ({
+    _id: msg._id?.toString?.() ?? msg._id,
+    match: msg.match?.toString?.() ?? msg.match,
+    sender:
+      msg.sender && typeof msg.sender === "object"
+        ? {
+            _id: msg.sender._id?.toString?.() ?? msg.sender._id,
+            firstName: msg.sender.firstName,
+          }
+        : msg.sender,
+    text: msg.text,
+    status: msg.status,
+    createdAt: msg.createdAt,
+  }));
 
   const nextCursor =
     messages.length > 0 ? messages[messages.length - 1].createdAt : null;
@@ -75,11 +94,19 @@ export const getMessages = async (
 };
 
 export const markAsDelivered = async (messageId: string) => {
-  return Message.findByIdAndUpdate(messageId, { status: "delivered" });
+  return Message.findByIdAndUpdate(
+    messageId,
+    { status: "delivered" },
+    { new: true },
+  )
+    .populate("sender", "firstName")
+    .exec();
 };
 
 export const markAsSeen = async (messageId: string) => {
-  return Message.findByIdAndUpdate(messageId, { status: "seen" });
+  return Message.findByIdAndUpdate(messageId, { status: "seen" }, { new: true })
+    .populate("sender", "firstName")
+    .exec();
 };
 
 export const updateLastSeen = async (userId: string) => {
