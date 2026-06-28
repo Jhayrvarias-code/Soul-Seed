@@ -2,6 +2,13 @@
 
 A full-stack dating app built with React, TypeScript, Node.js, Express, and MongoDB.
 
+#Live Server
+https://soul-seed-d3wc.vercel.app/
+
+#Deployed
+- Render (Backend)
+- Vercel (Frontend)
+
 ## Features
 - User authentication (JWT)
 - Profile creation & matching
