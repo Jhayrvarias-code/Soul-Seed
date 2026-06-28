@@ -5,7 +5,7 @@ A full-stack dating app built with React, TypeScript, Node.js, Express, and Mong
 # Live Server
 https://soul-seed-d3wc.vercel.app/
 
-#Deployed
+## Deployed
 - Render (Backend)
 - Vercel (Frontend)
 
